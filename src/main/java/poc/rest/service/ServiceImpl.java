@@ -1,7 +1,6 @@
-package test.rest.service;
+package poc.rest.service;
 
-import org.springframework.stereotype.Service;
-import test.rest.model.Client;
+import poc.rest.model.Client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,14 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Service
-public class ClientServiceImpl implements ClientService {
+@org.springframework.stereotype.Service
+public class ServiceImpl implements Service {
 
     // Хранилище клиентов
     private static final Map<Integer, Client> CLIENT_REPOSITORY_MAP = new HashMap<>();
 
     // Переменная для генерации ID клиента
     private static final AtomicInteger CLIENT_ID_HOLDER = new AtomicInteger();
+
+    @Override
+    public Client read(int id, String name) {
+        return new Client(id, name, name + "@some_email.com", "some phone number = 2035239");
+    }
 
     @Override
     public void create(Client client) {

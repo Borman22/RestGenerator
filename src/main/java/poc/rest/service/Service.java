@@ -1,10 +1,10 @@
-package test.rest.service;
+package poc.rest.service;
 
-import test.rest.model.Client;
+import poc.rest.model.Client;
 
 import java.util.List;
 
-public interface ClientService {
+public interface Service {
 
     /**
      * Создает нового клиента
@@ -24,6 +24,8 @@ public interface ClientService {
      * @return - объект клиента с заданным ID
      */
     Client read(int id);
+
+    Client read(int id, String name);
 
     /**
      * Обновляет клиента с заданным ID,
