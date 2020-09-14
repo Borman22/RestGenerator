@@ -5,15 +5,17 @@ import poc.rest.request.parameters.RequestParam;
 
 import java.util.List;
 
-public class HttpRequestUpdate implements HttpRequest {
+public class HttpRequestUpdate{
+
+    private String mapping = "/";
+
     public HttpRequestUpdate(ParsedConfigUpdate parsedConfigUpdate) {}
 
-    @Override
     public String getMapping() {
-        return "";
+        return mapping;
     }
 
-    @Override
+
     public List<RequestParam> getRequestParams() {
         return null;
     }

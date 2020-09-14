@@ -1,16 +1,19 @@
 package poc.rest.controller;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import poc.rest.config.ParsedYamlConfig;
 import poc.rest.config.configparcer.read.ParsedConfigRead;
 import poc.rest.request.*;
 import poc.rest.request.parameters.RequestParam;
+import poc.rest.service.ServiceDelete;
 import poc.rest.service.ServiceRead;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static spark.Spark.*;
 
@@ -46,16 +49,16 @@ public class MainController {
         get("/", (request, response) -> {
             String allMappings = "";
 //            for(HttpRequestCreate temp : requestsCreate)
-//                allMappings += "Create:\t" + temp.getMapping() + "\n";
+//                allMappings += "Create:\t" + temp.getMappingWithCurlyBraces() + " <br> ";
 
             for(HttpRequestRead temp : requestsRead)
-                allMappings += "Read:\t" + temp.getMapping() + "\n";
+                allMappings += "Read:\t" + temp.getMappingWithCurlyBraces() + " <br> ";
 
 //            for(HttpRequestUpdate temp : requestsUpdate)
-//                allMappings += "Update:\t" + temp.getMapping() + "\n";
+//                allMappings += "Update:\t" + temp.getMappingWithCurlyBraces() + " <br> ";
 //
-//            for(HttpRequestDelete temp : requestsDelete)
-//                allMappings += "Delete:\t" + temp.getMapping() + "\n";
+            for(HttpRequestDelete temp : requestsDelete)
+                allMappings += "Delete:\t" + temp.getMapping() + " <br> ";
 
             return allMappings;
         });
@@ -64,35 +67,40 @@ public class MainController {
 //            put(create.getMapping(), (request, response) -> {return null;});
 //        }
 
+
+// SELECT "user"."id" AS user_id, "user"."name" AS user_name, "orders"."id" AS orders_id, "orders"."orders" AS orders_orders
+// FROM "user_order"
+// JOIN "user" ON "user_order"."user_id"="user"."id"
+// JOIN "orders" ON "user_order"."orders_id"="orders"."id"
+// WHERE "user"."id" = ?;
         for(HttpRequestRead read : requestsRead){
             get(read.getMapping(), (request, response) -> {
+                response.type("application/json");
                 Map<RequestParam, String> paramsValues = new LinkedHashMap<>();
                 for(RequestParam requestParam : read.getRequestParams())
                     paramsValues.put(requestParam, request.params(requestParam.getName()));
                 ServiceRead serviceRead = new ServiceRead("jdbc:postgresql://localhost:5432/test", "root", "root");
-//                return serviceRead.execute(read, paramsValues);});
                 return new Gson().toJson(serviceRead.execute(read, paramsValues));});
         }
 
 //        for(HttpRequestUpdate update : requestsUpdate){
 //            put(update.getMapping(), (request, response) -> {return null;});
 //        }
-//
-//        for(HttpRequestDelete delete : requestsDelete){
-//            put(delete.getMapping(), (request, response) -> {return null;});
-//        }
 
-//        for(CreateConfig createConfig : restConfig.getRequestCreate())
-//            requestAndMappingCreateList.add(new RequestAndMappingCreate(createConfig));
 
-//        for(ParsedConfigRead parsedConfigRead : parsedYamlConfig.getRequestsRead())
-//            requestsRead.add(new HttpRequestRead(parsedConfigRead.getSelectColumns(), parsedConfigRead.getJoins(), parsedConfigRead.getConditionColumns()));
+//  DELETE
+        for(HttpRequestDelete delete : requestsDelete){
+            put(delete.getMapping(), (request, response) -> {
+                response.type("application/json");
+                ServiceDelete serviceDelete = new ServiceDelete("jdbc:postgresql://localhost:5432/test", "root", "root");
 
-//        for(UpdateConfig updateConfig : restConfig.getRequestUpdate())
-//            requestAndMappingUpdateList.add(new RequestAndMappingUpdate(updateConfig));
-//
-//        for(DeleteConfig deleteConfig : restConfig.getRequestDelete())
-//            requestAndMappingDeleteList.add(new RequestAndMappingDelete(deleteConfig));
+                Map<String, Integer> resultMessage = new HashMap<>();
+                resultMessage.put("Удалено строк", serviceDelete.execute(delete, request.body()));
+
+                return new Gson().toJson(resultMessage);
+            });
+        }
+
 
     }
 }

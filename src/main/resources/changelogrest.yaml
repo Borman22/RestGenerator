@@ -1,132 +1,134 @@
-#databaseChangeLog:
-#  - changeSet:
-#      id: 1599467802986-1
-#      author: borman (generated)
-#      changes:
-#        - createTable:
-#            columns:
-#              - column:
-#                  autoIncrement: true
-#                  constraints:
-#                    nullable: false
-#                    primaryKey: true
-#                    primaryKeyName: constraint_8
-#                  name: id
-#                  type: INT
-#              - column:
-#                  name: orders
-#                  type: VARCHAR(255)
-#            tableName: orders
-#  - changeSet:
-#      id: 1599467802986-2
-#      author: borman (generated)
-#      changes:
-#        - createTable:
-#            columns:
-#              - column:
-#                  autoIncrement: true
-#                  constraints:
-#                    nullable: false
-#                    primaryKey: true
-#                    primaryKeyName: constraint_2
-#                  name: id
-#                  type: INT
-#              - column:
-#                  name: name
-#                  type: VARCHAR(255)
-#            tableName: user
-#  - changeSet:
-#      id: 1599467802986-3
-#      author: borman (generated)
-#      changes:
-#        - createTable:
-#            columns:
-#              - column:
-#                  autoIncrement: true
-#                  constraints:
-#                    nullable: false
-#                    primaryKey: true
-#                    primaryKeyName: constraint_c
-#                  name: id
-#                  type: INT
-#              - column:
-#                  constraints:
-#                    nullable: false
-#                  name: user_id
-#                  type: INT
-#              - column:
-#                  constraints:
-#                    nullable: false
-#                  name: orders_id
-#                  type: INT
-#            tableName: user_order
-#  - changeSet:
-#      id: 1599467802986-4
-#      author: borman (generated)
-#      changes:
-#        - createIndex:
-#            columns:
-#              - column:
-#                  name: user_id
-#            indexName: constraint_index_c
-#            tableName: user_order
-#  - changeSet:
-#      id: 1599467802986-5
-#      author: borman (generated)
-#      changes:
-#        - createIndex:
-#            columns:
-#              - column:
-#                  name: orders_id
-#            indexName: constraint_index_c6
-#            tableName: user_order
-#  - changeSet:
-#      id: 1599467802986-6
-#      author: borman (generated)
-#      changes:
-#        - addForeignKeyConstraint:
-#            baseColumnNames: user_id
-#            baseTableName: user_order
-#            constraintName: constraint_c6
-#            deferrable: false
-#            initiallyDeferred: false
-#            onDelete: RESTRICT
-#            onUpdate: RESTRICT
-#            referencedColumnNames: id
-#            referencedTableName: user
-#            validate: true
-#  - changeSet:
-#      id: 1599467802986-7
-#      author: borman (generated)
-#      changes:
-#        - addForeignKeyConstraint:
-#            baseColumnNames: orders_id
-#            baseTableName: user_order
-#            constraintName: constraint_c69
-#            deferrable: false
-#            initiallyDeferred: false
-#            onDelete: RESTRICT
-#            onUpdate: RESTRICT
-#            referencedColumnNames: id
-#            referencedTableName: orders
-#            validate: true
+databaseChangeLog:
+  - changeSet:
+      id: 1599467802986-1
+      author: borman (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: constraint_8
+                  name: id
+                  type: INT
+              - column:
+                  name: orders
+                  type: VARCHAR(255)
+            tableName: orders
+  - changeSet:
+      id: 1599467802986-2
+      author: borman (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: constraint_2
+                  name: id
+                  type: INT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: user
+  - changeSet:
+      id: 1599467802986-3
+      author: borman (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: constraint_c
+                  name: id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: orders_id
+                  type: INT
+            tableName: user_order
+  - changeSet:
+      id: 1599467802986-4
+      author: borman (generated)
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: user_id
+            indexName: constraint_index_c
+            tableName: user_order
+  - changeSet:
+      id: 1599467802986-5
+      author: borman (generated)
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: orders_id
+            indexName: constraint_index_c6
+            tableName: user_order
+  - changeSet:
+      id: 1599467802986-6
+      author: borman (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_order
+            constraintName: constraint_c6
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: user
+            validate: true
+  - changeSet:
+      id: 1599467802986-7
+      author: borman (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: orders_id
+            baseTableName: user_order
+            constraintName: constraint_c69
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: orders
+            validate: true
+
+
 
 
 # restApi
 requestsRead:
   - selectColumns:
-      - tableName: user
-        columnName: id
-        columnType: INT
-      - tableName: user
-        columnName: name
-        columnType: VARCHAR
-      - tableName: orders
-        columnName: id
-        columnType: INT
-      - tableName: orders
-        columnName: orders
-        columnType: VARCHAR
+    - tableName: user
+      columnName: id
+      columnType: INT
+    - tableName: user
+      columnName: name
+      columnType: VARCHAR
+    - tableName: orders
+      columnName: id
+      columnType: INT
+    - tableName: orders
+      columnName: orders
+      columnType: VARCHAR
     joins:
       - joinType: JOIN
         columns:
@@ -148,7 +150,64 @@ requestsRead:
       - tableName: user
         columnName: id
         columnType: INT
-#      - tableName: user
-#        columnName: name
-#        columnType: VARCHAR(255)
+      - tableName: user
+        columnName: name
+        columnType: VARCHAR
 
+  - selectColumns:
+    - tableName: user
+      columnName: id
+      columnType: INT
+    - tableName: user
+      columnName: name
+      columnType: VARCHAR
+    - tableName: orders
+      columnName: id
+      columnType: INT
+    - tableName: orders
+      columnName: orders
+      columnType: VARCHAR
+    joins:
+      - joinType: JOIN
+        columns:
+          - tableName: user_order
+            columnName: user_id
+            columnType: INT
+          - tableName: user
+            columnName: id
+            columnType: INT
+      - joinType: JOIN
+        columns:
+          - tableName: user_order
+            columnName: orders_id
+            columnType: INT
+          - tableName: orders
+            columnName: id
+            columnType: INT
+    conditionColumns:
+      - tableName: user
+        columnName: id
+        columnType: INT
+
+requestsDelete:
+  - deleteEntries:
+    - tableName: user_order
+      conditionColumns:
+        - tableName: user_order
+          columnName: user_id
+          columnType: INT
+    - tableName: user
+      conditionColumns:
+        - tableName: user
+          columnName: id
+          columnType: INT
+        - tableName: user
+          columnName: name
+          columnType: VARCHAR
+
+  - deleteEntries:
+    - tableName: user_order
+      conditionColumns:
+        - tableName: user_order
+          columnName: user_id
+          columnType: INT

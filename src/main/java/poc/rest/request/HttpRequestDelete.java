@@ -1,20 +1,33 @@
 package poc.rest.request;
 
-import poc.rest.config.configparcer.delete.ParsedConfigDelete;
-import poc.rest.request.parameters.RequestParam;
+import poc.rest.config.configparcer.delete.DeleteEntry;
 
 import java.util.List;
 
-public class HttpRequestDelete implements HttpRequest {
-    public HttpRequestDelete(ParsedConfigDelete parsedConfigDelete){}
+public class HttpRequestDelete {
 
-    @Override
+    private String mapping = "";
+
+    private List<DeleteEntry> deleteEntries;
+
+    public HttpRequestDelete(List<DeleteEntry> deleteEntries) {
+        this.deleteEntries = deleteEntries;
+        fillMapping();
+    }
+
     public String getMapping() {
-        return "";
+        return mapping;
     }
 
-    @Override
-    public List<RequestParam> getRequestParams() {
-        return null;
+    public List<DeleteEntry> getDeleteEntries() {
+        return deleteEntries;
     }
+
+    //     /tableName1/tableName2 - удаляются данные из 2х таблиц
+    private void fillMapping() {
+        for (DeleteEntry entry : deleteEntries) {
+            mapping += "/" + entry.getTableName();
+        }
+    }
+
 }

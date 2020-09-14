@@ -1,6 +1,6 @@
 package poc.rest.service;
 
-import poc.rest.config.configparcer.read.Column;
+import poc.rest.config.configparcer.Column;
 import poc.rest.config.util.Separator;
 import poc.rest.config.util.StringProcessor;
 import poc.rest.persistance.DataSource;
@@ -23,30 +23,28 @@ public class ServiceRead {
         sqlExecutor = new SQLExecutor(dataSource);
     }
 
-    public List<List<Object>> execute(HttpRequestRead httpRequestRead, Map<RequestParam, String> parameters) {
+    public List<Map<String, Object>> execute(HttpRequestRead httpRequestRead, Map<RequestParam, String> parameters) {
         String sqlQuery = buildSqlQuery(httpRequestRead);
         return sqlExecutor.executeSelect(sqlQuery, httpRequestRead.getSelectColumns(), parameters);
     }
 
 
     private String buildSqlQuery(HttpRequestRead httpRequestRead) {
-        String request = "";
 
-        request = "SELECT ";
+        String sqlQuery = "SELECT ";
 
         for(int i = 0; i < httpRequestRead.getSelectColumnsInQuotes().size(); i++){
-            request += httpRequestRead.getSelectColumnsInQuotes().get(i) + " AS " + httpRequestRead.getSelectColumns().get(i);
+            sqlQuery += httpRequestRead.getSelectColumnsInQuotes().get(i) + " AS " + httpRequestRead.getSelectColumns().get(i);
             if(i != httpRequestRead.getSelectColumnsInQuotes().size() - 1)
-                request += ", ";
+                sqlQuery += ", ";
         }
-//        request += StringProcessor.separateCollection(httpRequestRead.getSelectColumnsInQuotes(), Separator.COMMA_SPACE);
 
-        request += " FROM ";
+        sqlQuery += " FROM ";
         if (httpRequestRead.getJoins() != null && httpRequestRead.getJoins().size() > 0) { // TODO предусмотреть возможность перестановки таблиц в join-е в yaml
             for (int i = 0; i < httpRequestRead.getJoins().size(); i++) {
                 List<Column> pairOfColumns = httpRequestRead.getJoins().get(i).getColumns();
-                if (i == 0) request += pairOfColumns.get(0).getTableNameQuotes();
-                request += " " + httpRequestRead.getJoins().get(i).getJoinType() + " " + pairOfColumns.get(1).getTableNameQuotes() + " ON "
+                if (i == 0) sqlQuery += pairOfColumns.get(0).getTableNameQuotes();
+                sqlQuery += " " + httpRequestRead.getJoins().get(i).getJoinType() + " " + pairOfColumns.get(1).getTableNameQuotes() + " ON "
                         + pairOfColumns.get(0).toStringQuotes() + "=" + pairOfColumns.get(1).toStringQuotes();
             }
         } else {
@@ -54,15 +52,13 @@ public class ServiceRead {
             for (Column column : httpRequestRead.getSelectColumns()) {
                 tableName.add(column.getTableNameQuotes());
             }
-            request += StringProcessor.separateCollection(Separator.SPACE, tableName, Separator.COMMA_SPACE);
+            sqlQuery += StringProcessor.separateCollection(Separator.SPACE, tableName, Separator.COMMA_SPACE);
         }
 
-        request += " WHERE ";
-        request += StringProcessor.separateCollection(httpRequestRead.getConditionColumnsInQuotes(), Separator.CONDITION_BETWEEN, Separator.CONDITION_END);
+        sqlQuery += " WHERE ";
+        sqlQuery += StringProcessor.separateCollection(httpRequestRead.getConditionColumnsInQuotes(), Separator.CONDITION_BETWEEN, Separator.CONDITION_END);
 
-        System.out.println("request = " + request);
-        return request;
+        System.out.println("sqlQuery = " + sqlQuery);
+        return sqlQuery;
     }
-
-
 }

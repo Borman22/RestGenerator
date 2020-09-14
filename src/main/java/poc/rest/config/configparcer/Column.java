@@ -1,12 +1,12 @@
-package poc.rest.config.configparcer.read;
+package poc.rest.config.configparcer;
 
 
 
 
 public class Column {
-    String tableName;
-    String columnName;
-    String columnType;
+    private String tableName;
+    private String columnName;
+    private String columnType;
 
     public String getColumnName() {
         return columnName;

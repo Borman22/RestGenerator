@@ -8,18 +8,26 @@ public class DataSource {
 
     Connection connection;
 
+    private String url;
+    private String user;
+    private String password;
+
     public DataSource(String url, String user, String password) {
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (SQLException e) {
-            throw new RuntimeException("Не удалось получить коннекшин к БД. Параметры: URL = " + url + ", User = " + user + ", Password = " + password + "\n" + e.getMessage());
-        }
+        this.url = url;
+        this.user = user;
+        this.password = password;
     }
 
     public Connection getConnection() {
         if(connection == null)
-            throw new RuntimeException("Соединение с БД было закрыто, поэтому не возможно получить connection");
-        return connection;
+            try {
+                connection = DriverManager.getConnection(url, user, password);
+                return connection;
+            } catch (SQLException e) {
+                throw new RuntimeException("Не удалось получить коннекшин к БД. Параметры: URL = " + url + ", User = " + user + ", Password = " + password + "\n" + e.getMessage());
+            }
+        else
+            return connection;
     }
 
     public void close() {

@@ -8,7 +8,7 @@ import poc.rest.config.configparcer.update.ParsedConfigUpdate;
 
 import java.util.List;
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ParsedYamlConfig {
 
     private List<ParsedConfigCreate> requestsCreate;

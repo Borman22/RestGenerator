@@ -1,5 +1,7 @@
 package poc.rest.config.configparcer.read;
 
+import poc.rest.config.configparcer.Column;
+
 import java.util.List;
 
 public class ParsedConfigRead {

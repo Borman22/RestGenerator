@@ -1,25 +1,27 @@
 package poc.rest.request;
 
-import poc.rest.config.configparcer.read.Column;
+import poc.rest.config.configparcer.Column;
 import poc.rest.config.configparcer.read.Join;
 import poc.rest.request.parameters.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpRequestRead implements HttpRequest{
+public class HttpRequestRead{
 
     private String mapping = "";
+    private String mappingWithCurlyBraces = "";
+
 
     private List<Column> selectColumns;
+    private List<String> selectColumnsInQuotes = new ArrayList<>();
+
     private List<Join> joins;
+
     private List<Column> conditionColumns;
+    private List<String> conditionColumnsInQuotes = new ArrayList<>();
+
     private List<RequestParam> requestParams = new ArrayList<>();
-
-
-
-    List<String> selectColumnsInQuotes = new ArrayList<>();
-    List<String> conditionColumnsInQuotes = new ArrayList<>();
 
     public HttpRequestRead(List<Column> selectColumns, List<Join> joins, List<Column> conditionColumns){
 
@@ -39,21 +41,13 @@ public class HttpRequestRead implements HttpRequest{
 
 
 
-    //        /order.id/:order.id/user.name/:user.name
-    private void fillMapping(){
-        for(Column column : conditionColumns){
-            mapping += "/" + column.toString() + "/:" + column.toString();
-        }
-    }
-
-    private void fillRequestParam(){
-        for(Column column : conditionColumns){
-            requestParams.add(new RequestParam(column.toString(), column.getColumnType()));
-        }
-    }
 
     public String getMapping() {
         return mapping;
+    }
+
+    public String getMappingWithCurlyBraces() {
+        return mappingWithCurlyBraces;
     }
 
     public List<RequestParam> getRequestParams() {
@@ -79,5 +73,27 @@ public class HttpRequestRead implements HttpRequest{
     public List<String> getSelectColumnsInQuotes() {
         return selectColumnsInQuotes;
     }
+
+
+
+
+    //        /order.id/:order.id/user.name/:user.name
+    private void fillMapping(){
+        for(Column column : conditionColumns){
+            mapping += "/" + column.toString() + "/:" + column.toString();
+        }
+
+        for(Column column : conditionColumns){
+            mappingWithCurlyBraces += "/" + column.toString() + "/{" + column.toString() + "}";
+        }
+    }
+
+    private void fillRequestParam(){
+        for(Column column : conditionColumns){
+            requestParams.add(new RequestParam(column.toString(), column.getColumnType()));
+        }
+    }
+
+
 
 }

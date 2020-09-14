@@ -5,16 +5,17 @@ import poc.rest.request.parameters.RequestParam;
 
 import java.util.List;
 
-public class HttpRequestCreate implements HttpRequest {
+public class HttpRequestCreate {
+
+    private String mapping = "/";
+
     public HttpRequestCreate(ParsedConfigCreate parsedConfigCreate) {}
 
-    @Override
     public String getMapping() {
-        return "";
+        return mapping;
     }
 
-    @Override
-    public List<RequestParam> getRequestParams() {
-        return null;
-    }
+
+
+
 }
