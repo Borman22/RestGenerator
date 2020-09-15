@@ -204,10 +204,44 @@ requestsDelete:
         - tableName: user
           columnName: name
           columnType: VARCHAR
-
   - deleteEntries:
     - tableName: user_order
       conditionColumns:
         - tableName: user_order
           columnName: user_id
           columnType: INT
+
+requestsCreate:
+  - createEntries:
+    - tableName: user
+      generatedColumn: id
+      fields:
+        - tableName: user
+          columnName: name
+          columnType: VARCHAR
+      returnedIdAlias: created_user_id
+    - tableName: orders
+      generatedColumn: id
+      fields:
+        - tableName: orders
+          columnName: orders
+          columnType: VARCHAR
+      returnedIdAlias: created_orders_id
+    - tableName: user_order
+      generatedColumn: id
+      fields:
+        - tableName: user_order
+          columnName: user_id
+          columnType: INT
+          assingAliasValue: created_user_id
+        - tableName: user_order
+          columnName: orders_id
+          columnType: INT
+          assingAliasValue: created_orders_id
+  - createEntries:
+      - tableName: user
+        generatedColumn: id
+        fields:
+          - tableName: user
+            columnName: name
+            columnType: VARCHAR

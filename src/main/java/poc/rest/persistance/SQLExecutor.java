@@ -37,15 +37,20 @@ public class SQLExecutor {
 //        return -1;
 //    }
 
-    public int executeDelete(List<String> queries) {
+    public int executeCreate(List<Map<String, Boolean>> queries) {
         Connection connection = dataSource.getConnection();
 
-        int affectedColumns = 0;
+        int affectedRows = 0;
         try (Statement statement = connection.createStatement()) {
             connection.setAutoCommit(false);
 
-            for(String query : queries){
-                affectedColumns += statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            for(Map<String, Boolean> queryMap : queries){
+                String query = queryMap.keySet().iterator().next();
+                if(queryMap.get(query))
+                    statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+                else
+                    affectedRows += statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+                statement.getGeneratedKeys().next();
             }
 
             connection.commit();
@@ -59,11 +64,41 @@ public class SQLExecutor {
             } catch (SQLException throwables) {
                 System.out.println("Не удалось выполнить rollback: " + throwables.getMessage());
                 dataSource.close();
-                return -1 * affectedColumns;
+                return -1 * affectedRows;
             }
         }
         dataSource.close();
-        return affectedColumns;
+        return affectedRows;
+    }
+
+
+    public int executeDelete(List<String> queries) {
+        Connection connection = dataSource.getConnection();
+
+        int affectedRows = 0;
+        try (Statement statement = connection.createStatement()) {
+            connection.setAutoCommit(false);
+
+            for(String query : queries){
+                affectedRows += statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            }
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            try {
+                System.out.println("Выполняется rollback. " + e.getMessage());
+                connection.rollback();
+                dataSource.close();
+                return 0;
+            } catch (SQLException throwables) {
+                System.out.println("Не удалось выполнить rollback: " + throwables.getMessage());
+                dataSource.close();
+                return -1 * affectedRows;
+            }
+        }
+        dataSource.close();
+        return affectedRows;
     }
 
 
