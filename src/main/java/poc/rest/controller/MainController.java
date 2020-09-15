@@ -12,11 +12,13 @@ import poc.rest.config.configparcer.create.ColumnRef;
 import poc.rest.config.configparcer.create.CreateEntry;
 import poc.rest.config.configparcer.delete.DeleteEntry;
 import poc.rest.config.configparcer.read.ParsedConfigRead;
+import poc.rest.config.configparcer.update.UpdateEntry;
 import poc.rest.request.*;
 import poc.rest.request.parameters.RequestParam;
 import poc.rest.service.ServiceCreate;
 import poc.rest.service.ServiceDelete;
 import poc.rest.service.ServiceRead;
+import poc.rest.service.ServiceUpdate;
 
 import java.util.*;
 
@@ -113,6 +115,40 @@ public class MainController {
             }
 
 
+            // UPDATE description
+            for(HttpRequestUpdate temp : requestsUpdate) {
+
+                Description description = new Description();
+                resultDescription.add(description);
+                description.setOperation("UPDATE");
+                description.setMapping(temp.getMapping());
+                description.setHttpMethod("PUT");
+
+                List<Map<String, String>> parameters = new ArrayList<>();
+                description.setParameters(parameters);
+                for(UpdateEntry updateEntry : temp.getUpdateEntries()) {
+                    for (Column column : updateEntry.getUpdateColumns()) {
+                        Map<String, String> parameter = new LinkedHashMap<>();
+                        parameter.put("name", "set_" + column.toString());
+                        parameter.put("type", column.getColumnType());
+                        parameters.add(parameter);
+                    }
+                    for (Column column : updateEntry.getConditionColumns()) {
+                        Map<String, String> parameter = new LinkedHashMap<>();
+                        parameter.put("name", column.toString());
+                        parameter.put("type", column.getColumnType());
+                        parameters.add(parameter);
+                    }
+                }
+                List<Map<String, String>> result = new ArrayList<>();
+                description.setResult(result);
+                Map<String, String> resultEntry = new HashMap<>();
+                result.add(resultEntry);
+                resultEntry.put("name", "updatedRows");
+                resultEntry.put("type", "INT");
+            }
+
+
             // DELETE description
             for(HttpRequestDelete temp : requestsDelete) {
 
@@ -177,9 +213,20 @@ public class MainController {
                 return new Gson().toJson(serviceRead.execute(read, paramsValues));});
         }
 
-//        for(HttpRequestUpdate update : requestsUpdate){
-//            put(update.getMapping(), (request, response) -> {return null;});
-//        }
+
+// UPDATE
+        // UPDATE films SET kind = 'Dramatic' WHERE kind = 'Drama';
+        for(HttpRequestUpdate update : requestsUpdate){
+            put(update.getMapping(), (request, response) -> {
+                response.type("application/json");
+                ServiceUpdate serviceUpdate = new ServiceUpdate("jdbc:postgresql://localhost:5432/test", "root", "root");
+
+                Map<String, Integer> resultMessage = new HashMap<>();
+                resultMessage.put("updatedRows", serviceUpdate.execute(update, request.body()));
+
+                return new Gson().toJson(resultMessage);
+            });
+        }
 
 
 //  DELETE

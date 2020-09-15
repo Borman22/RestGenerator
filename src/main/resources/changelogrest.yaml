@@ -239,9 +239,31 @@ requestsCreate:
           columnType: INT
           assingAliasValue: created_orders_id
   - createEntries:
-      - tableName: user
-        generatedColumn: id
-        fields:
-          - tableName: user
-            columnName: name
-            columnType: VARCHAR
+    - tableName: user
+      generatedColumn: id
+      fields:
+        - tableName: user
+          columnName: name
+          columnType: VARCHAR
+
+requestsUpdate:
+  - updateEntries:
+    - tableName: user_order
+      updateColumns:
+        - tableName: user_order
+          columnName: user_id
+          columnType: INT
+      conditionColumns:
+        - tableName: user_order
+          columnName: user_id
+          columnType: INT
+  - updateEntries:
+    - tableName: user
+      updateColumns:
+        - tableName: user
+          columnName: name
+          columnType: VARCHAR
+      conditionColumns:
+        - tableName: user
+          columnName: id
+          columnType: INT

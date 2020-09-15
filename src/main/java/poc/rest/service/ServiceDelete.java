@@ -52,7 +52,7 @@ public class ServiceDelete {
             sqlQueries.add(buildSqlQuery(deleteEntry, paramsValues));
         }
 
-        return sqlExecutor.executeDelete(sqlQueries);
+        return sqlExecutor.executeUpdateDelete(sqlQueries);
     }
 
 

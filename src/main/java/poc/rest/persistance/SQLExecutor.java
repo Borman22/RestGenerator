@@ -19,24 +19,6 @@ public class SQLExecutor {
         dataSource.close();
     }
 
-//    public int executeInsertUpdate(String query, List<RequestParam> requestParams) {
-//        try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-////            for (int i = 0; i < args.length; i++) {
-////                preparedStatement.setObject(i + 1, args[i]);
-////            }
-//            int rowsAffected = preparedStatement.executeUpdate();
-//            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-//            if (resultSet.next()) {
-//                return resultSet.getInt(1);
-//            } else {
-//                return rowsAffected;
-//            }
-//        } catch (SQLException e) {
-//            System.out.println(e);
-//        }
-//        return -1;
-//    }
-
     public int executeCreate(List<Map<String, Boolean>> queries) {
         Connection connection = dataSource.getConnection();
 
@@ -71,8 +53,7 @@ public class SQLExecutor {
         return affectedRows;
     }
 
-
-    public int executeDelete(List<String> queries) {
+    public int executeUpdateDelete(List<String> queries) {
         Connection connection = dataSource.getConnection();
 
         int affectedRows = 0;
@@ -100,7 +81,6 @@ public class SQLExecutor {
         dataSource.close();
         return affectedRows;
     }
-
 
     public List<Map<String, Object>> executeSelect(String query, List<Column> selectColumns, Map<RequestParam, String> parameters) {
         Connection connection = dataSource.getConnection();
