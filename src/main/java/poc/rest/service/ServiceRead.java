@@ -58,7 +58,6 @@ public class ServiceRead {
         sqlQuery += " WHERE ";
         sqlQuery += StringProcessor.separateCollection(httpRequestRead.getConditionColumnsInQuotes(), Separator.CONDITION_BETWEEN, Separator.CONDITION_END);
 
-        System.out.println("sqlQuery = " + sqlQuery);
         return sqlQuery;
     }
 }

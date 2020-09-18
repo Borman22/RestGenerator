@@ -4,22 +4,29 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import poc.rest.RestApplication;
 import poc.rest.config.ParsedYamlConfig;
 import poc.rest.config.configparcer.Column;
 import poc.rest.config.configparcer.create.ColumnRef;
 import poc.rest.config.configparcer.create.CreateEntry;
 import poc.rest.config.configparcer.delete.DeleteEntry;
-import poc.rest.config.configparcer.read.ParsedConfigRead;
 import poc.rest.config.configparcer.update.UpdateEntry;
-import poc.rest.request.*;
+import poc.rest.openapi.OpenApiDocument;
+import poc.rest.openapi.TypeRelationsOpenApi;
+import poc.rest.openapi.parts.*;
+import poc.rest.request.HttpRequestCreate;
+import poc.rest.request.HttpRequestDelete;
+import poc.rest.request.HttpRequestRead;
+import poc.rest.request.HttpRequestUpdate;
 import poc.rest.request.parameters.RequestParam;
 import poc.rest.service.ServiceCreate;
 import poc.rest.service.ServiceDelete;
 import poc.rest.service.ServiceRead;
 import poc.rest.service.ServiceUpdate;
 
+import java.io.File;
 import java.util.*;
 
 import static spark.Spark.*;
@@ -34,6 +41,11 @@ public class MainController {
     List<HttpRequestUpdate> requestsUpdate;
     List<HttpRequestDelete> requestsDelete;
 
+    private String URL;
+    private String user;
+    private String password;
+
+
     // C: Create - POST
     // R: Read - GET
     // U: Update - PUT
@@ -42,16 +54,27 @@ public class MainController {
                           List<HttpRequestCreate> requestsCreate,
                           List<HttpRequestRead> requestsRead,
                           List<HttpRequestUpdate> requestsUpdate,
-                          List<HttpRequestDelete> requestsDelete) {
+                          List<HttpRequestDelete> requestsDelete,
+                          String URL,
+                          String user,
+                          String password) {
         this.port = port;
         this.requestsCreate = requestsCreate;
         this.requestsRead = requestsRead;
         this.requestsUpdate = requestsUpdate;
         this.requestsDelete = requestsDelete;
+        this.URL = URL;
+        this.user = user;
+        this.password = password;
     }
 
     public void start(){
         port(port);
+
+//        get("/api", (request, response) -> {
+//                    response.type("application/json");
+//                    return RestApplication.OpenApiDocument);
+//                });
 
         // Description for all methods
         get("/", (request, response) -> {
@@ -113,7 +136,6 @@ public class MainController {
                     resultEntry.put("type", column.getColumnType());
                 }
             }
-
 
             // UPDATE description
             for(HttpRequestUpdate temp : requestsUpdate) {
@@ -184,11 +206,11 @@ public class MainController {
 
 
 
-//  CREATE
+// CREATE
         for(HttpRequestCreate create : requestsCreate){
             post(create.getMapping(), (request, response) -> {
                 response.type("application/json");
-                ServiceCreate serviceCreate = new ServiceCreate("jdbc:postgresql://localhost:5432/test", "root", "root");
+                ServiceCreate serviceCreate = new ServiceCreate(URL, user, password);
 
                 Map<String, Integer> resultMessage = new HashMap<>();
                 resultMessage.put("createdRows", serviceCreate.execute(create, request.body()));
@@ -209,7 +231,7 @@ public class MainController {
                 Map<RequestParam, String> paramsValues = new LinkedHashMap<>();
                 for(RequestParam requestParam : read.getRequestParams())
                     paramsValues.put(requestParam, request.params(requestParam.getName()));
-                ServiceRead serviceRead = new ServiceRead("jdbc:postgresql://localhost:5432/test", "root", "root");
+                ServiceRead serviceRead = new ServiceRead(URL, user, password);
                 return new Gson().toJson(serviceRead.execute(read, paramsValues));});
         }
 
@@ -219,7 +241,7 @@ public class MainController {
         for(HttpRequestUpdate update : requestsUpdate){
             put(update.getMapping(), (request, response) -> {
                 response.type("application/json");
-                ServiceUpdate serviceUpdate = new ServiceUpdate("jdbc:postgresql://localhost:5432/test", "root", "root");
+                ServiceUpdate serviceUpdate = new ServiceUpdate(URL, user, password);
 
                 Map<String, Integer> resultMessage = new HashMap<>();
                 resultMessage.put("updatedRows", serviceUpdate.execute(update, request.body()));
@@ -233,7 +255,7 @@ public class MainController {
         for(HttpRequestDelete delete : requestsDelete){
             delete(delete.getMapping(), (request, response) -> {
                 response.type("application/json");
-                ServiceDelete serviceDelete = new ServiceDelete("jdbc:postgresql://localhost:5432/test", "root", "root");
+                ServiceDelete serviceDelete = new ServiceDelete(URL, user, password);
 
                 Map<String, Integer> resultMessage = new HashMap<>();
                 resultMessage.put("deletedRows", serviceDelete.execute(delete, request.body()));
